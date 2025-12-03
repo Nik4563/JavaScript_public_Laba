@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты теста</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .result {
+            font-size: 24px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f0f8ff;
+        }
+        .good {
+            color: #28a745;
+        }
+        .average {
+            color: #ffc107;
+        }
+        .poor {
+            color: #dc3545;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Результаты теста</h1>
+    
+    <div id="resultContainer" class="result">
+        <p>Загрузка результатов...</p>
+    </div>
+    
+    <a href="5laba-2.html" class="back-button">Пройти тест ещё раз</a>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const score = urlParams.get('score');
+        const totalQuestions = urlParams.get('totalQuestions');
+        
+        const resultContainer = document.getElementById('resultContainer');
+        
+        if (score && totalQuestions) {
+            const percentage = (score / totalQuestions) * 100;
+            
+            let resultClass = '';
+            let message = '';
+            
+            if (percentage >= 80) {
+                resultClass = 'good';
+                message = 'Отличный результат!';
+            } else if (percentage >= 50) {
+                resultClass = 'average';
+                message = 'Неплохо!';
+            } else {
+                resultClass = 'poor';
+                message = 'Попробуйте ещё раз!';
+            }
+            
+            resultContainer.innerHTML = `
+                <h2 class="${resultClass}">${message}</h2>
+                <p>Вы ответили правильно на <strong>${score}</strong> из <strong>${totalQuestions}</strong> вопросов</p>
+                <p>Процент правильных ответов: <strong>${percentage.toFixed(0)}%</strong></p>`;
+        } else {
+            resultContainer.innerHTML = '<p>Результаты не найдены. Пройдите тест сначала.</p>';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .question h3 {
+            margin-top: 0;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            margin: 8px 0;
+            padding: 5px;
+        }
+
+        .option:hover {
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .option input {
+            margin-right: 10px;
+        }
+
+        .option label {
+            cursor: pointer;
+        }
+
+        button {
+            padding: 12px 30px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="text-align: center;">Тест по общим знаниям</h1>
+
+    <form id="testForm">
+        <div class="question">
+            <h3>Вопрос 1: Какая столица России?</h3>
+            <div class="option">
+                <input type="radio" name="q1" value="a" id="q1a">
+                <label for="q1a">Иваново</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q1" value="b" id="q1b">
+                <label for="q1b">Москва</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>Вопрос 2: Сколько планет в Солнечной системе?</h3>
+            <div class="option">
+                <input type="radio" name="q2" value="a" id="q2a">
+                <label for="q2a">8</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q2" value="b" id="q2b">
+                <label for="q2b">9</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>Вопрос 3: Какой химический элемент обозначается символом "O"?</h3>
+            <div class="option">
+                <input type="radio" name="q3" value="a" id="q3a">
+                <label for="q3a">Золото</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q3" value="b" id="q3b">
+                <label for="q3b">Кислород</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>Вопрос 4: Какое животное является символом России?</h3>
+            <div class="option">
+                <input type="radio" name="q4" value="a" id="q4a">
+                <label for="q4a">Орёл</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q4" value="b" id="q4b">
+                <label for="q4b">Медведь</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <h3>Вопрос 5: Как называется самая длинная река в мире?</h3>
+            <div class="option">
+                <input type="radio" name="q5" value="a" id="q5a">
+                <label for="q5a">Амазонка</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="q5" value="b" id="q5b">
+                <label for="q5b">Нил</label>
+            </div>
+        </div>
+
+        <button type="submit">Завершить тест</button>
+    </form>
+
+    <script>
+        const correctAnswers = {
+    q1: "b", // Москва
+    q2: "a", // 8
+    q3: "b", // Кислород
+    q4: "b", // Медведь
+    q5: "a"  // Амазонка
+};
+
+const form = document.getElementById('testForm');
+
+form.addEventListener('submit', function(event){
+    event.preventDefault();
+
+    let allAnswered = true;
+    let count = 0;
+    let unansweredQuestions = [];
+
+    for (let i = 1; i <= 5; i++) {
+        const questionName = `q${i}`;
+        const selected = document.querySelector(`input[name="${questionName}"]:checked`);
+        
+        if (!selected) {
+            allAnswered = false;
+            unansweredQuestions.push(i);
+        } else {
+            
+            if (selected.value === correctAnswers[questionName]) {
+                count++;
+            }
+        }
+    }
+    
+    if (allAnswered) {
+        window.location.href = `results.html?score=${count}&totalQuestions=5`;
+    } else {
+        let message = 'Пожалуйста, ответьте на все вопросы!\n';
+        message += 'Не отвеченные вопросы: ' + unansweredQuestions.join(', ');
+        
+        alert(message);
+    }
+});
+
+    </script>
+</body>
+
+</html>

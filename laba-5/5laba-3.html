@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 30px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .input-error {
+            border-color: red;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto !important;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Оплата</h1>
+
+    <form id="paymentForm">
+        <div class="input-group">
+            <label>Имя на карте:</label>
+            <input type="text" id="cardName" placeholder="IVAN IVANOV">
+            <div id="cardNameError" class="error"></div>
+        </div>
+
+        <div class="input-group">
+            <label>Номер карты:</label>
+            <input type="text" id="cardNumber" placeholder="1234567812345678" maxlength="16">
+            <div id="cardNumberError" class="error"></div>
+        </div>
+
+        <div class="input-group">
+            <label>Срок действия (ММ/ГГ):</label>
+            <input type="text" id="cardExpiry" placeholder="12/25" maxlength="5">
+            <div id="cardExpiryError" class="error"></div>
+        </div>
+
+        <div class="input-group">
+            <label>CVC/CVV:</label>
+            <input type="password" id="cardCVC" placeholder="123" maxlength="4">
+            <div id="cardCVCError" class="error"></div>
+        </div>
+
+        <div class="input-group">
+            <label>Почтовый индекс:</label>
+            <input type="text" id="postalCode" placeholder="123456" maxlength="6">
+            <div id="postalCodeError" class="error"></div>
+        </div>
+
+        <div class="input-group">
+            <div class="checkbox-group">
+                <label for="saveCard">Сохранить карту</label>
+                <input type="checkbox" id="saveCard">
+            </div>
+        </div>
+
+        <button type="submit">Оплатить</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('paymentForm');
+        const cardName = document.getElementById('cardName');
+        const cardNumber = document.getElementById('cardNumber');
+        const cardExpiry = document.getElementById('cardExpiry');
+        const cardCVC = document.getElementById('cardCVC');
+        const postalCode = document.getElementById('postalCode');
+        const saveCard = document.getElementById('saveCard');
+
+        function showError(field, message) {
+            const errorElement = document.getElementById(field.id + 'Error');
+            errorElement.textContent = message;
+            field.classList.add('input-error');
+        }
+
+        function hideError(field) {
+            const errorElement = document.getElementById(field.id + 'Error');
+            errorElement.textContent = '';
+            field.classList.remove('input-error');
+        }
+
+        function checkCardName() {
+            const value = cardName.value.trim();
+
+            if (value === '') {
+                showError(cardName, 'Введите имя на карте');
+                return false;
+            }
+
+            if (!/^[a-zA-Z\s]+$/.test(value)) {
+                showError(cardName, 'Только английские буквы');
+                return false;
+            }
+
+            const words = value.split(' ').filter(word => word.length > 0);
+            if (words.length < 2) {
+                showError(cardName, 'Введите имя и фамилию');
+                return false;
+            }
+
+            hideError(cardName);
+            return true;
+        }
+
+        function checkCardNumber() {
+            const value = cardNumber.value;
+
+            if (value === '') {
+                showError(cardNumber, 'Введите номер карты');
+                return false;
+            }
+
+            if (!/^\d{16}$/.test(value)) {
+                showError(cardNumber, 'Должно быть 16 цифр');
+                return false;
+            }
+
+            hideError(cardNumber);
+            return true;
+        }
+
+        function checkCardExpiry() {
+            const value = cardExpiry.value;
+
+            if (value === '') {
+                showError(cardExpiry, 'Введите срок действия');
+                return false;
+            }
+
+            if (!/^\d{2}\/\d{2}$/.test(value)) {
+                showError(cardExpiry, 'Формат: ММ/ГГ (например: 12/25)');
+                return false;
+            }
+
+            const month = parseInt(value.split('/')[0]);
+            if (month < 1 || month > 12) {
+                showError(cardExpiry, 'Месяц должен быть от 01 до 12');
+                return false;
+            }
+
+            hideError(cardExpiry);
+            return true;
+        }
+
+        function checkCardCVC() {
+            const value = cardCVC.value;
+
+            if (value === '') {
+                showError(cardCVC, 'Введите CVC код');
+                return false;
+            }
+
+            if (!/^\d{3,4}$/.test(value)) {
+                showError(cardCVC, 'Должно быть 3 или 4 цифры');
+                return false;
+            }
+
+            hideError(cardCVC);
+            return true;
+        }
+
+        function checkPostalCode() {
+            const value = postalCode.value;
+
+            if (value === '') {
+                showError(postalCode, 'Введите почтовый индекс');
+                return false;
+            }
+
+            if (!/^\d{6}$/.test(value)) {
+                showError(postalCode, 'Должно быть 6 цифр');
+                return false;
+            }
+
+            hideError(postalCode);
+            return true;
+        }
+
+        cardName.addEventListener('input', function () {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+            checkCardName();
+        });
+
+        cardNumber.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '');
+            if (this.value.length > 16) {
+                this.value = this.value.slice(0, 16);
+            }
+            checkCardNumber();
+        });
+
+        cardExpiry.addEventListener('input', function () {
+            let value = this.value.replace(/\D/g, '');
+
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+
+            this.value = value;
+            checkCardExpiry();
+        });
+
+        cardCVC.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '');
+            if (this.value.length > 4) {
+                this.value = this.value.slice(0, 4);
+            }
+            checkCardCVC();
+        });
+
+        postalCode.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '');
+            if (this.value.length > 6) {
+                this.value = this.value.slice(0, 6);
+            }
+            checkPostalCode();
+        });
+
+        cardName.addEventListener('blur', checkCardName);
+        cardNumber.addEventListener('blur', checkCardNumber);
+        cardExpiry.addEventListener('blur', checkCardExpiry);
+        cardCVC.addEventListener('blur', checkCardCVC);
+        postalCode.addEventListener('blur', checkPostalCode);
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const isNameValid = checkCardName();
+            const isNumberValid = checkCardNumber();
+            const isExpiryValid = checkCardExpiry();
+            const isCVCValid = checkCardCVC();
+            const isPostalValid = checkPostalCode();
+
+            if (isNameValid && isNumberValid && isExpiryValid && isCVCValid && isPostalValid) {
+                const lastFourDigits = cardNumber.value.slice(-4);
+
+                window.location.href = `payment-success.html?cardHolder=${encodeURIComponent(cardName.value)}&lastFourDigits=${lastFourDigits}&shippingIndex=${postalCode.value}`;
+            } else {
+                alert('Исправьте ошибки в форме');
+            }
+        });
+    </script>
+</body>
+
+</html>

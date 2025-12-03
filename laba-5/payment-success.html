@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Платеж успешен</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .success-icon {
+            color: green;
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .details {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-icon">✓</div>
+    <h1>Платеж успешно завершен!</h1>
+    
+    <div class="details" id="paymentDetails">
+        <p>Загрузка информации...</p>
+    </div>
+    
+    <a href="5laba-3.html" class="back-button">Сделать новый платеж</a>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const cardHolder = urlParams.get('cardHolder');
+        const lastFourDigits = urlParams.get('lastFourDigits');
+        const shippingIndex = urlParams.get('shippingIndex');
+        
+        const detailsElement = document.getElementById('paymentDetails');
+        
+        if (cardHolder && lastFourDigits && shippingIndex) {
+            detailsElement.innerHTML = `
+                <h3>Детали платежа:</h3>
+                <p><strong>Владелец карты:</strong> ${decodeURIComponent(cardHolder)}</p>
+                <p><strong>Номер карты:</strong> **** **** **** ${lastFourDigits}</p>
+                <p><strong>Почтовый индекс доставки:</strong> ${shippingIndex}</p>
+                <p><strong>Статус:</strong> Успешно оплачено</p>`;
+        } else {
+            detailsElement.innerHTML = '<p>Информация о платеже не найдена</p>';
+        }
+    </script>
+</body>
+</html>
