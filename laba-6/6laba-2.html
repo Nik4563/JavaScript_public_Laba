@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="products">
+        <button class="product-btn">Товар 1</button>
+        <button class="product-btn">Товар 2</button>
+        <button class="product-btn">Товар 3</button>
+        <button class="product-btn">Товар 4</button>
+        <button class="product-btn">Товар 5</button>
+        <button class="product-btn">Товар 6</button>
+    </div>
+
+    <div class="View">
+        <h2>Вы недавно смотрели</h2>
+        <ul id="recentList"></ul>
+    </div>
+
+    <script>
+        const buttons = document.querySelectorAll('.product-btn');
+        const recentList = document.getElementById('recentList');
+
+        function getViewedProducts() {
+            const data = localStorage.getItem('viewedProducts');
+            if (data) {
+                return JSON.parse(data);
+            }
+            else {
+                return [];
+            }
+        }
+        function saveViewedProducts(products) {
+            localStorage.setItem('viewedProducts', JSON.stringify(products));
+        }
+
+        function displayViewedProducts() {
+            const products = getViewedProducts();
+
+            recentList.innerHTML = '';
+
+            const lastThree = products.slice(-3);
+            lastThree.reverse().forEach(productName => {
+                const li = document.createElement('li');
+                li.textContent = productName;
+                recentList.appendChild(li);
+            });
+        }
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const productName = button.textContent;
+
+                let products = getViewedProducts();
+                products = products.filter(item => item !== productName);
+
+                products.push(productName);
+                saveViewedProducts(products);
+
+                displayViewedProducts()
+            });
+        });
+        displayViewedProducts();
+    </script>
+</body>
+
+</html>
